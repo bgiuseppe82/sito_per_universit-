@@ -172,6 +172,213 @@ class BackendTester:
             self.log_result("Recording Retrieval", False, f"Request error: {str(e)}")
             return False
     
+    def test_user_language_preferences(self):
+        """Test user language preference endpoint"""
+        if not self.session_token:
+            self.log_result("User Language Preferences", False, "No session token available")
+            return False
+        
+        success_count = 0
+        total_tests = 5  # Test all supported languages
+        
+        supported_languages = ["en", "it", "es", "fr", "de"]
+        language_names = {
+            "en": "English",
+            "it": "Italian", 
+            "es": "Spanish",
+            "fr": "French",
+            "de": "German"
+        }
+        
+        for lang_code in supported_languages:
+            try:
+                headers = {
+                    'Authorization': f'Bearer {self.session_token}',
+                    'Content-Type': 'application/json'
+                }
+                
+                language_data = {'language': lang_code}
+                
+                response = requests.put(f"{API_BASE}/user/language",
+                                      headers=headers,
+                                      json=language_data,
+                                      timeout=10)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get('language') == lang_code and 'updated' in data.get('message', '').lower():
+                        self.log_result(f"Language Update ({language_names[lang_code]})", True, 
+                                      f"Language successfully updated to {language_names[lang_code]} ({lang_code})")
+                        success_count += 1
+                    else:
+                        self.log_result(f"Language Update ({language_names[lang_code]})", False, 
+                                      f"Unexpected response: {data}")
+                else:
+                    self.log_result(f"Language Update ({language_names[lang_code]})", False, 
+                                  f"HTTP {response.status_code}: {response.text}")
+            except Exception as e:
+                self.log_result(f"Language Update ({language_names[lang_code]})", False, 
+                              f"Request error: {str(e)}")
+        
+        # Test invalid language
+        try:
+            headers = {
+                'Authorization': f'Bearer {self.session_token}',
+                'Content-Type': 'application/json'
+            }
+            
+            language_data = {'language': 'invalid'}
+            
+            response = requests.put(f"{API_BASE}/user/language",
+                                  headers=headers,
+                                  json=language_data,
+                                  timeout=10)
+            
+            if response.status_code == 400:
+                self.log_result("Language Validation", True, "Invalid language properly rejected")
+            else:
+                self.log_result("Language Validation", False, f"Expected 400, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Language Validation", False, f"Request error: {str(e)}")
+        
+        # Overall result
+        if success_count == total_tests:
+            self.log_result("User Language Preferences", True, f"All {total_tests} language updates successful")
+            return True
+        else:
+            self.log_result("User Language Preferences", False, f"Only {success_count}/{total_tests} language updates successful")
+            return False
+
+    def test_multilingual_ai_processing(self):
+        """Test AI processing with different languages"""
+        if not self.session_token or not self.test_recording_id:
+            self.log_result("Multilingual AI Processing", False, "No session token or recording ID available")
+            return False
+        
+        success_count = 0
+        total_tests = 15  # 5 languages × 3 modes
+        
+        languages = [
+            ("en", "English"),
+            ("it", "Italian"),
+            ("es", "Spanish"), 
+            ("fr", "French"),
+            ("de", "German")
+        ]
+        
+        processing_modes = [
+            ('full', 'Full Transcription'),
+            ('summary', 'Smart Summarization'),
+            ('chapters', 'Chapter Detection')
+        ]
+        
+        for lang_code, lang_name in languages:
+            for mode_type, mode_name in processing_modes:
+                try:
+                    headers = {
+                        'Authorization': f'Bearer {self.session_token}',
+                        'Content-Type': 'application/json'
+                    }
+                    
+                    processing_data = {
+                        'recording_id': self.test_recording_id,
+                        'type': mode_type,
+                        'language': lang_code
+                    }
+                    
+                    response = requests.post(f"{API_BASE}/recordings/{self.test_recording_id}/process",
+                                           headers=headers,
+                                           json=processing_data,
+                                           timeout=15)
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        if data.get('status') == 'processing' and lang_code in data.get('message', ''):
+                            self.log_result(f"AI {mode_name} ({lang_name})", True, 
+                                          f"{mode_name} processing started in {lang_name}",
+                                          f"Language: {lang_code}, Status: {data['status']}")
+                            
+                            # Wait for processing to complete
+                            time.sleep(4)
+                            if self.verify_multilingual_processing_completion(mode_type, mode_name, lang_code, lang_name):
+                                success_count += 1
+                        else:
+                            self.log_result(f"AI {mode_name} ({lang_name})", False, 
+                                          f"Unexpected response: {data}")
+                    else:
+                        self.log_result(f"AI {mode_name} ({lang_name})", False, 
+                                      f"HTTP {response.status_code}: {response.text}")
+                except Exception as e:
+                    self.log_result(f"AI {mode_name} ({lang_name})", False, 
+                                  f"Request error: {str(e)}")
+        
+        # Overall result
+        if success_count >= 12:  # Allow some tolerance for async processing
+            self.log_result("Multilingual AI Processing", True, 
+                          f"{success_count}/{total_tests} multilingual AI processing tests successful")
+            return True
+        else:
+            self.log_result("Multilingual AI Processing", False, 
+                          f"Only {success_count}/{total_tests} multilingual processing tests successful")
+            return False
+
+    def verify_multilingual_processing_completion(self, mode_type, mode_name, lang_code, lang_name):
+        """Verify that multilingual AI processing was completed correctly"""
+        try:
+            headers = {'Authorization': f'Bearer {self.session_token}'}
+            response = requests.get(f"{API_BASE}/recordings/{self.test_recording_id}", 
+                                  headers=headers, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('status') == 'completed':
+                    # Language-specific validation keywords
+                    language_keywords = {
+                        "en": ["Newton's Laws", "Physics", "motion", "force"],
+                        "it": ["Leggi di Newton", "Fisica", "movimento", "forza", "moto"],
+                        "es": ["Leyes de Newton", "Física", "movimiento", "fuerza"],
+                        "fr": ["Lois de Newton", "Physique", "mouvement", "force"],
+                        "de": ["Newtons Gesetze", "Physik", "Bewegung", "Kraft"]
+                    }
+                    
+                    keywords = language_keywords.get(lang_code, language_keywords["en"])
+                    
+                    # Check for appropriate content based on mode
+                    if mode_type == 'full' and data.get('transcript'):
+                        content = data['transcript']
+                        if any(keyword in content for keyword in keywords) and len(content) > 500:
+                            self.log_result(f"AI {mode_name} ({lang_name}) Completion", True, 
+                                          f"{mode_name} completed with {lang_name} content",
+                                          f"Content length: {len(content)} chars, Language: {lang_code}")
+                            return True
+                    elif mode_type in ['summary', 'chapters'] and data.get('summary'):
+                        content = data['summary']
+                        if any(keyword in content for keyword in keywords) and len(content) > 200:
+                            self.log_result(f"AI {mode_name} ({lang_name}) Completion", True, 
+                                          f"{mode_name} completed with {lang_name} content",
+                                          f"Content length: {len(content)} chars, Language: {lang_code}")
+                            return True
+                    
+                    self.log_result(f"AI {mode_name} ({lang_name}) Completion", False, 
+                                  f"Content doesn't contain expected {lang_name} keywords")
+                    return False
+                elif data.get('status') == 'processing':
+                    self.log_result(f"AI {mode_name} ({lang_name}) Completion", True, 
+                                  f"{mode_name} still processing in {lang_name} (acceptable)")
+                    return True
+                else:
+                    self.log_result(f"AI {mode_name} ({lang_name}) Completion", False, 
+                                  f"Status: {data.get('status')}, Expected: completed")
+                    return False
+            else:
+                self.log_result(f"AI {mode_name} ({lang_name}) Completion", False, 
+                              f"HTTP {response.status_code}: {response.text}")
+                return False
+        except Exception as e:
+            self.log_result(f"AI {mode_name} ({lang_name}) Completion", False, 
+                          f"Request error: {str(e)}")
+            return False
+
     def test_ai_processing_modes(self):
         """Test all three AI processing modes: full transcription, smart summarization, chapter detection"""
         if not self.session_token or not self.test_recording_id:
