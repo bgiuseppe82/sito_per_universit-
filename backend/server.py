@@ -41,6 +41,7 @@ class User(BaseModel):
     subscription_status: str = "trial"
     referral_code: str = Field(default_factory=lambda: str(uuid.uuid4())[:8])
     discount_amount: float = 0.0
+    preferred_language: str = "en"  # Default to English
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class Recording(BaseModel):
