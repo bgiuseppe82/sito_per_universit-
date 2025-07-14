@@ -74,6 +74,7 @@ class RecordingCreate(BaseModel):
 class TranscriptionRequest(BaseModel):
     recording_id: str
     type: str = "full"  # full, summary, chapters
+    language: str = "en"  # User's preferred language
 
 class ProcessingResponse(BaseModel):
     message: str
