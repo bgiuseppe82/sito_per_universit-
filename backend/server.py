@@ -594,6 +594,23 @@ async def get_user_profile(current_user: User = Depends(get_current_user)):
     """Get current user profile"""
     return current_user
 
+@api_router.put("/user/language")
+async def update_user_language(language_data: dict, current_user: User = Depends(get_current_user)):
+    """Update user's preferred language"""
+    supported_languages = ["en", "it", "es", "fr", "de"]
+    new_language = language_data.get("language", "en")
+    
+    if new_language not in supported_languages:
+        raise HTTPException(status_code=400, detail="Unsupported language")
+    
+    # Update user's preferred language
+    await db.users.update_one(
+        {"id": current_user.id},
+        {"$set": {"preferred_language": new_language}}
+    )
+    
+    return {"message": f"Language updated to {new_language}", "language": new_language}
+
 @api_router.get("/user/referral")
 async def get_referral_info(current_user: User = Depends(get_current_user)):
     """Get referral code and discount info"""
