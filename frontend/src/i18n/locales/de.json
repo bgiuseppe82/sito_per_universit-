@@ -1,0 +1,148 @@
+{
+  "app": {
+    "title": "SmartNotes",
+    "subtitle": "KI-gestützte Vorlesungstranskription und Zusammenfassung für Studenten",
+    "loading": "Wird geladen...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "back": "Zurück",
+    "next": "Weiter",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
+    "yes": "Ja",
+    "no": "Nein"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "signup": "Registrieren",
+    "getStarted": "Loslegen",
+    "welcome": "Willkommen",
+    "welcomeBack": "Willkommen zurück",
+    "loginRequired": "Bitte melden Sie sich an, um fortzufahren",
+    "sessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an."
+  },
+  "language": {
+    "selectLanguage": "Sprache auswählen",
+    "changeLanguage": "Sprache ändern",
+    "languages": {
+      "en": "Englisch",
+      "it": "Italienisch",
+      "es": "Spanisch",
+      "fr": "Französisch",
+      "de": "Deutsch"
+    }
+  },
+  "features": {
+    "recording": "Vorlesungen mit einem Klick aufnehmen",
+    "transcription": "KI-Transkription und Zusammenfassung",
+    "sharing": "Notizen exportieren und teilen"
+  },
+  "recording": {
+    "title": "Neue Vorlesung aufnehmen",
+    "start": "Aufnahme starten",
+    "stop": "Aufnahme stoppen",
+    "pause": "Pausieren",
+    "resume": "Fortsetzen",
+    "reset": "Zurücksetzen",
+    "save": "Aufnahme speichern",
+    "saving": "Speichert...",
+    "duration": "Dauer",
+    "microphonePermission": "Mikrofon-Berechtigung erforderlich",
+    "microphoneError": "Zugriff auf Mikrofon fehlgeschlagen. Überprüfen Sie die Berechtigungen.",
+    "titlePlaceholder": "Vorlesungstitel eingeben...",
+    "titleRequired": "Titel ist erforderlich",
+    "tagsPlaceholder": "physik, vorlesung, kapitel-1",
+    "tagsLabel": "Tags (durch Komma getrennt)",
+    "notesLabel": "Notizen",
+    "notesPlaceholder": "Zusätzliche Notizen hinzufügen...",
+    "recordingSuccess": "Aufnahme erfolgreich gespeichert!",
+    "recordingError": "Speichern der Aufnahme fehlgeschlagen. Bitte erneut versuchen."
+  },
+  "recordings": {
+    "title": "Ihre Aufnahmen",
+    "noRecordings": "Noch keine Aufnahmen. Nehmen Sie Ihre erste Vorlesung oben auf!",
+    "processing": "Verarbeitung...",
+    "completed": "Abgeschlossen",
+    "failed": "Fehlgeschlagen",
+    "deleteConfirm": "Sind Sie sicher, dass Sie diese Aufnahme löschen möchten?",
+    "deleteSuccess": "Aufnahme erfolgreich gelöscht",
+    "deleteError": "Löschen der Aufnahme fehlgeschlagen"
+  },
+  "ai": {
+    "fullTranscript": "Vollständige Transkription",
+    "summary": "Zusammenfassung",
+    "chapters": "Kapitel",
+    "processing": "Verarbeitung...",
+    "transcriptReady": "Transkription bereit",
+    "summaryReady": "Zusammenfassung bereit",
+    "chaptersReady": "Kapitel bereit",
+    "transcriptLabel": "Transkription:",
+    "summaryLabel": "Zusammenfassung:",
+    "chaptersLabel": "Kapitel:",
+    "processingFailed": "KI-Verarbeitung fehlgeschlagen. Bitte erneut versuchen.",
+    "processingSuccess": "KI-Verarbeitung erfolgreich abgeschlossen"
+  },
+  "profile": {
+    "title": "Profil",
+    "name": "Name",
+    "email": "E-Mail",
+    "subscription": "Abonnement",
+    "referral": "Empfehlung",
+    "referralCode": "Ihr Empfehlungscode",
+    "discount": "Monatlicher Rabatt",
+    "monthlyCost": "Monatliche Kosten",
+    "settings": "Einstellungen",
+    "language": "Sprache",
+    "theme": "Theme",
+    "notifications": "Benachrichtigungen"
+  },
+  "dashboard": {
+    "title": "Willkommen bei SmartNotes",
+    "subtitle": "Nehmen Sie Ihre Vorlesungen auf und erhalten Sie KI-gestützte Transkriptionen und Zusammenfassungen",
+    "recentRecordings": "Neueste Aufnahmen",
+    "quickActions": "Schnellaktionen",
+    "stats": "Statistiken",
+    "totalRecordings": "Gesamt Aufnahmen",
+    "totalDuration": "Gesamtdauer",
+    "thisWeek": "Diese Woche"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "recordings": "Aufnahmen",
+    "profile": "Profil",
+    "settings": "Einstellungen",
+    "help": "Hilfe"
+  },
+  "notifications": {
+    "transcriptionComplete": "Transkription abgeschlossen für {{title}}",
+    "summaryComplete": "Zusammenfassung abgeschlossen für {{title}}",
+    "chaptersComplete": "Kapitel abgeschlossen für {{title}}",
+    "recordingSaved": "Aufnahme erfolgreich gespeichert",
+    "processingStarted": "KI-Verarbeitung gestartet",
+    "error": "Ein Fehler ist aufgetreten. Bitte erneut versuchen."
+  },
+  "onboarding": {
+    "welcome": "Willkommen bei SmartNotes",
+    "step1": "Wählen Sie Ihre bevorzugte Sprache",
+    "step2": "Richten Sie Ihr Profil ein",
+    "step3": "Beginnen Sie mit der Aufnahme Ihrer ersten Vorlesung",
+    "languageSelection": "Wählen Sie Ihre Sprache für die beste Erfahrung",
+    "continue": "Fortfahren",
+    "skip": "Überspringen",
+    "finish": "Einrichtung abschließen"
+  },
+  "help": {
+    "title": "Hilfe und Support",
+    "faq": "Häufig gestellte Fragen",
+    "contact": "Support kontaktieren",
+    "guides": "Benutzerhandbücher",
+    "howToRecord": "So nehmen Sie Vorlesungen auf",
+    "howToTranscribe": "So erhalten Sie Transkriptionen",
+    "howToExport": "So exportieren Sie Notizen"
+  }
+}

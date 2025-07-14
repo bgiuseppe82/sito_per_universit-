@@ -1,0 +1,148 @@
+{
+  "app": {
+    "title": "SmartNotes",
+    "subtitle": "AI-powered lesson transcription and summarization for students",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "signup": "Sign Up",
+    "getStarted": "Get Started",
+    "welcome": "Welcome",
+    "welcomeBack": "Welcome back",
+    "loginRequired": "Please login to continue",
+    "sessionExpired": "Your session has expired. Please login again."
+  },
+  "language": {
+    "selectLanguage": "Select Language",
+    "changeLanguage": "Change Language",
+    "languages": {
+      "en": "English",
+      "it": "Italian",
+      "es": "Spanish",
+      "fr": "French",
+      "de": "German"
+    }
+  },
+  "features": {
+    "recording": "Record lessons with one tap",
+    "transcription": "AI transcription & summarization",
+    "sharing": "Export & share notes"
+  },
+  "recording": {
+    "title": "Record New Lesson",
+    "start": "Start Recording",
+    "stop": "Stop Recording",
+    "pause": "Pause",
+    "resume": "Resume",
+    "reset": "Reset",
+    "save": "Save Recording",
+    "saving": "Saving...",
+    "duration": "Duration",
+    "microphonePermission": "Microphone permission required",
+    "microphoneError": "Failed to access microphone. Please check permissions.",
+    "titlePlaceholder": "Enter lesson title...",
+    "titleRequired": "Title is required",
+    "tagsPlaceholder": "physics, lecture, chapter-1",
+    "tagsLabel": "Tags (comma-separated)",
+    "notesLabel": "Notes",
+    "notesPlaceholder": "Add any additional notes...",
+    "recordingSuccess": "Recording saved successfully!",
+    "recordingError": "Failed to save recording. Please try again."
+  },
+  "recordings": {
+    "title": "Your Recordings",
+    "noRecordings": "No recordings yet. Record your first lesson above!",
+    "processing": "Processing...",
+    "completed": "Completed",
+    "failed": "Failed",
+    "deleteConfirm": "Are you sure you want to delete this recording?",
+    "deleteSuccess": "Recording deleted successfully",
+    "deleteError": "Failed to delete recording"
+  },
+  "ai": {
+    "fullTranscript": "Full Transcript",
+    "summary": "Summary",
+    "chapters": "Chapters",
+    "processing": "Processing...",
+    "transcriptReady": "Transcript ready",
+    "summaryReady": "Summary ready",
+    "chaptersReady": "Chapters ready",
+    "transcriptLabel": "Transcript:",
+    "summaryLabel": "Summary:",
+    "chaptersLabel": "Chapters:",
+    "processingFailed": "AI processing failed. Please try again.",
+    "processingSuccess": "AI processing completed successfully"
+  },
+  "profile": {
+    "title": "Profile",
+    "name": "Name",
+    "email": "Email",
+    "subscription": "Subscription",
+    "referral": "Referral",
+    "referralCode": "Your Referral Code",
+    "discount": "Monthly Discount",
+    "monthlyCost": "Monthly Cost",
+    "settings": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "notifications": "Notifications"
+  },
+  "dashboard": {
+    "title": "Welcome to SmartNotes",
+    "subtitle": "Record your lessons and get AI-powered transcripts and summaries",
+    "recentRecordings": "Recent Recordings",
+    "quickActions": "Quick Actions",
+    "stats": "Statistics",
+    "totalRecordings": "Total Recordings",
+    "totalDuration": "Total Duration",
+    "thisWeek": "This Week"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "recordings": "Recordings",
+    "profile": "Profile",
+    "settings": "Settings",
+    "help": "Help"
+  },
+  "notifications": {
+    "transcriptionComplete": "Transcription completed for {{title}}",
+    "summaryComplete": "Summary completed for {{title}}",
+    "chaptersComplete": "Chapters completed for {{title}}",
+    "recordingSaved": "Recording saved successfully",
+    "processingStarted": "AI processing started",
+    "error": "An error occurred. Please try again."
+  },
+  "onboarding": {
+    "welcome": "Welcome to SmartNotes",
+    "step1": "Choose your preferred language",
+    "step2": "Set up your profile",
+    "step3": "Start recording your first lesson",
+    "languageSelection": "Select your language for the best experience",
+    "continue": "Continue",
+    "skip": "Skip",
+    "finish": "Finish Setup"
+  },
+  "help": {
+    "title": "Help & Support",
+    "faq": "Frequently Asked Questions",
+    "contact": "Contact Support",
+    "guides": "User Guides",
+    "howToRecord": "How to record lessons",
+    "howToTranscribe": "How to get transcriptions",
+    "howToExport": "How to export notes"
+  }
+}

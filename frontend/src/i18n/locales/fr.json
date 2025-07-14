@@ -1,0 +1,148 @@
+{
+  "app": {
+    "title": "SmartNotes",
+    "subtitle": "Transcription et résumé de cours avec IA pour étudiants",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "next": "Suivant",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "auth": {
+    "login": "Se connecter",
+    "logout": "Se déconnecter",
+    "signup": "S'inscrire",
+    "getStarted": "Commencer",
+    "welcome": "Bienvenue",
+    "welcomeBack": "Bon retour",
+    "loginRequired": "Veuillez vous connecter pour continuer",
+    "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter."
+  },
+  "language": {
+    "selectLanguage": "Sélectionner la langue",
+    "changeLanguage": "Changer de langue",
+    "languages": {
+      "en": "Anglais",
+      "it": "Italien",
+      "es": "Espagnol",
+      "fr": "Français",
+      "de": "Allemand"
+    }
+  },
+  "features": {
+    "recording": "Enregistrez des cours en un clic",
+    "transcription": "Transcription et résumé avec IA",
+    "sharing": "Exportez et partagez vos notes"
+  },
+  "recording": {
+    "title": "Enregistrer un nouveau cours",
+    "start": "Commencer l'enregistrement",
+    "stop": "Arrêter l'enregistrement",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "reset": "Réinitialiser",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "duration": "Durée",
+    "microphonePermission": "Autorisation du microphone requise",
+    "microphoneError": "Impossible d'accéder au microphone. Vérifiez les permissions.",
+    "titlePlaceholder": "Entrez le titre du cours...",
+    "titleRequired": "Le titre est obligatoire",
+    "tagsPlaceholder": "physique, cours, chapitre-1",
+    "tagsLabel": "Tags (séparés par des virgules)",
+    "notesLabel": "Notes",
+    "notesPlaceholder": "Ajoutez des notes supplémentaires...",
+    "recordingSuccess": "Enregistrement sauvegardé avec succès !",
+    "recordingError": "Échec de la sauvegarde. Veuillez réessayer."
+  },
+  "recordings": {
+    "title": "Vos enregistrements",
+    "noRecordings": "Aucun enregistrement pour le moment. Enregistrez votre premier cours ci-dessus !",
+    "processing": "Traitement...",
+    "completed": "Terminé",
+    "failed": "Échoué",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet enregistrement ?",
+    "deleteSuccess": "Enregistrement supprimé avec succès",
+    "deleteError": "Échec de la suppression"
+  },
+  "ai": {
+    "fullTranscript": "Transcription complète",
+    "summary": "Résumé",
+    "chapters": "Chapitres",
+    "processing": "Traitement...",
+    "transcriptReady": "Transcription prête",
+    "summaryReady": "Résumé prêt",
+    "chaptersReady": "Chapitres prêts",
+    "transcriptLabel": "Transcription :",
+    "summaryLabel": "Résumé :",
+    "chaptersLabel": "Chapitres :",
+    "processingFailed": "Traitement IA échoué. Veuillez réessayer.",
+    "processingSuccess": "Traitement IA terminé avec succès"
+  },
+  "profile": {
+    "title": "Profil",
+    "name": "Nom",
+    "email": "Email",
+    "subscription": "Abonnement",
+    "referral": "Parrainage",
+    "referralCode": "Votre code de parrainage",
+    "discount": "Réduction mensuelle",
+    "monthlyCost": "Coût mensuel",
+    "settings": "Paramètres",
+    "language": "Langue",
+    "theme": "Thème",
+    "notifications": "Notifications"
+  },
+  "dashboard": {
+    "title": "Bienvenue sur SmartNotes",
+    "subtitle": "Enregistrez vos cours et obtenez des transcriptions et résumés avec IA",
+    "recentRecordings": "Enregistrements récents",
+    "quickActions": "Actions rapides",
+    "stats": "Statistiques",
+    "totalRecordings": "Total d'enregistrements",
+    "totalDuration": "Durée totale",
+    "thisWeek": "Cette semaine"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "recordings": "Enregistrements",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "help": "Aide"
+  },
+  "notifications": {
+    "transcriptionComplete": "Transcription terminée pour {{title}}",
+    "summaryComplete": "Résumé terminé pour {{title}}",
+    "chaptersComplete": "Chapitres terminés pour {{title}}",
+    "recordingSaved": "Enregistrement sauvegardé avec succès",
+    "processingStarted": "Traitement IA démarré",
+    "error": "Une erreur s'est produite. Veuillez réessayer."
+  },
+  "onboarding": {
+    "welcome": "Bienvenue sur SmartNotes",
+    "step1": "Choisissez votre langue préférée",
+    "step2": "Configurez votre profil",
+    "step3": "Commencez à enregistrer votre premier cours",
+    "languageSelection": "Sélectionnez votre langue pour une meilleure expérience",
+    "continue": "Continuer",
+    "skip": "Passer",
+    "finish": "Terminer la configuration"
+  },
+  "help": {
+    "title": "Aide et support",
+    "faq": "Questions fréquentes",
+    "contact": "Contacter le support",
+    "guides": "Guides d'utilisation",
+    "howToRecord": "Comment enregistrer des cours",
+    "howToTranscribe": "Comment obtenir des transcriptions",
+    "howToExport": "Comment exporter des notes"
+  }
+}
