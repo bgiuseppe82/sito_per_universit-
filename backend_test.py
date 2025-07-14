@@ -172,53 +172,68 @@ class BackendTester:
             self.log_result("Recording Retrieval", False, f"Request error: {str(e)}")
             return False
     
-    def test_ai_transcription(self):
-        """Test AI transcription with Gemini 2.0 Flash"""
+    def test_ai_processing_modes(self):
+        """Test all three AI processing modes: full transcription, smart summarization, chapter detection"""
         if not self.session_token or not self.test_recording_id:
-            self.log_result("AI Transcription", False, "No session token or recording ID available")
+            self.log_result("AI Processing", False, "No session token or recording ID available")
             return False
-            
-        try:
-            headers = {
-                'Authorization': f'Bearer {self.session_token}',
-                'Content-Type': 'application/json'
-            }
-            
-            # Test full transcription
-            transcription_data = {
-                'recording_id': self.test_recording_id,
-                'type': 'full'
-            }
-            
-            response = requests.post(f"{API_BASE}/recordings/{self.test_recording_id}/process",
-                                   headers=headers,
-                                   json=transcription_data,
-                                   timeout=15)
-            
-            if response.status_code == 200:
-                data = response.json()
-                required_fields = ['message', 'recording_id', 'status']
+        
+        success_count = 0
+        total_modes = 3
+        
+        # Test all three processing modes
+        processing_modes = [
+            ('full', 'Full Transcription'),
+            ('summary', 'Smart Summarization'),
+            ('chapters', 'Chapter Detection')
+        ]
+        
+        for mode_type, mode_name in processing_modes:
+            try:
+                headers = {
+                    'Authorization': f'Bearer {self.session_token}',
+                    'Content-Type': 'application/json'
+                }
                 
-                if all(field in data for field in required_fields):
-                    if data['status'] == 'processing':
-                        self.log_result("AI Transcription", True, "Transcription processing started successfully",
-                                      f"Recording ID: {data['recording_id']}, Status: {data['status']}")
-                        
-                        # Wait a moment and check if processing completed
-                        time.sleep(3)
-                        return self.verify_transcription_completion()
+                processing_data = {
+                    'recording_id': self.test_recording_id,
+                    'type': mode_type
+                }
+                
+                response = requests.post(f"{API_BASE}/recordings/{self.test_recording_id}/process",
+                                       headers=headers,
+                                       json=processing_data,
+                                       timeout=15)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    required_fields = ['message', 'recording_id', 'status']
+                    
+                    if all(field in data for field in required_fields):
+                        if data['status'] == 'processing':
+                            self.log_result(f"AI {mode_name}", True, f"{mode_name} processing started successfully",
+                                          f"Recording ID: {data['recording_id']}, Status: {data['status']}")
+                            
+                            # Wait for processing to complete
+                            time.sleep(4)
+                            if self.verify_processing_completion(mode_type, mode_name):
+                                success_count += 1
+                        else:
+                            self.log_result(f"AI {mode_name}", False, f"Unexpected status: {data['status']}")
                     else:
-                        self.log_result("AI Transcription", False, f"Unexpected status: {data['status']}")
-                        return False
+                        missing = [f for f in required_fields if f not in data]
+                        self.log_result(f"AI {mode_name}", False, f"Missing fields in response: {missing}")
                 else:
-                    missing = [f for f in required_fields if f not in data]
-                    self.log_result("AI Transcription", False, f"Missing fields in response: {missing}")
-                    return False
-            else:
-                self.log_result("AI Transcription", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-        except Exception as e:
-            self.log_result("AI Transcription", False, f"Request error: {str(e)}")
+                    self.log_result(f"AI {mode_name}", False, f"HTTP {response.status_code}: {response.text}")
+            except Exception as e:
+                self.log_result(f"AI {mode_name}", False, f"Request error: {str(e)}")
+        
+        # Overall result
+        if success_count == total_modes:
+            self.log_result("AI Processing (All Modes)", True, f"All {total_modes} AI processing modes successful")
+            return True
+        else:
+            self.log_result("AI Processing (All Modes)", False, f"Only {success_count}/{total_modes} modes successful")
             return False
     
     def verify_transcription_completion(self):
