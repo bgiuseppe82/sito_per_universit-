@@ -277,7 +277,8 @@ const RecordingControls = ({ onRecordingComplete }) => {
   const [tags, setTags] = useState('');
   const [notes, setNotes] = useState('');
   const [isUploading, setIsUploading] = useState(false);
-  const { sessionToken } = useAuth();
+  const { sessionToken, user } = useAuth();
+  const { t, i18n } = useTranslation();
 
   const formatDuration = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -310,7 +311,7 @@ const RecordingControls = ({ onRecordingComplete }) => {
       resetRecording();
     } catch (error) {
       console.error('Failed to save recording:', error);
-      alert('Failed to save recording. Please try again.');
+      alert(t('recording.recordingError'));
     } finally {
       setIsUploading(false);
     }
@@ -318,7 +319,7 @@ const RecordingControls = ({ onRecordingComplete }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h2 className="text-xl font-semibold mb-4">Record New Lesson</h2>
+      <h2 className="text-xl font-semibold mb-4">{t('recording.title')}</h2>
       
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -334,6 +335,7 @@ const RecordingControls = ({ onRecordingComplete }) => {
             onClick={startRecording}
             disabled={audioData}
             className="bg-red-500 hover:bg-red-600 disabled:bg-gray-300 text-white p-4 rounded-full transition-colors"
+            title={t('recording.start')}
           >
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
@@ -343,6 +345,7 @@ const RecordingControls = ({ onRecordingComplete }) => {
           <button
             onClick={stopRecording}
             className="bg-gray-500 hover:bg-gray-600 text-white p-4 rounded-full transition-colors"
+            title={t('recording.stop')}
           >
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 012 0v6a1 1 0 11-2 0V7zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V7z" clipRule="evenodd" />
@@ -355,7 +358,7 @@ const RecordingControls = ({ onRecordingComplete }) => {
             onClick={resetRecording}
             className="bg-gray-400 hover:bg-gray-500 text-white p-2 rounded"
           >
-            Reset
+            {t('recording.reset')}
           </button>
         )}
       </div>
@@ -364,38 +367,38 @@ const RecordingControls = ({ onRecordingComplete }) => {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Title *
+              {t('recording.titlePlaceholder')} *
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter lesson title..."
+              placeholder={t('recording.titlePlaceholder')}
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Tags (comma-separated)
+              {t('recording.tagsLabel')}
             </label>
             <input
               type="text"
               value={tags}
               onChange={(e) => setTags(e.target.value)}
-              placeholder="physics, lecture, chapter-1"
+              placeholder={t('recording.tagsPlaceholder')}
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Notes
+              {t('recording.notesLabel')}
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Add any additional notes..."
+              placeholder={t('recording.notesPlaceholder')}
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows="3"
             />
@@ -406,7 +409,7 @@ const RecordingControls = ({ onRecordingComplete }) => {
             disabled={!title.trim() || isUploading}
             className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white py-2 px-4 rounded font-medium transition-colors"
           >
-            {isUploading ? 'Saving...' : 'Save Recording'}
+            {isUploading ? t('recording.saving') : t('recording.save')}
           </button>
         </div>
       )}
