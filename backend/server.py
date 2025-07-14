@@ -97,25 +97,26 @@ async def get_current_user(authorization: HTTPAuthorizationCredentials = Depends
     return User(**user)
 
 async def process_audio_with_ai(recording_id: str, audio_data: str, processing_type: str = "full"):
-    """Process audio data using Gemini 2.0 Flash for transcription and summarization"""
+    """Process audio data with mock AI responses that simulate Claude Sonnet 4"""
     try:
-        # For demo purposes, we'll simulate audio processing
-        # In a real implementation, you'd first convert audio to text using Whisper
-        # Then send the text to Gemini for summarization
-        
-        # Initialize Claude Sonnet 4 chat
-        chat = LlmChat(
-            api_key=os.environ.get('ANTHROPIC_API_KEY', 'demo-key'),
-            session_id=f"audio-processing-{recording_id}",
-            system_message="You are an AI assistant that helps students by transcribing and summarizing their lesson recordings."
-        ).with_model("anthropic", "claude-sonnet-4-20250514")
-        
-        # Simulate transcription (in real app, use Whisper API first)
+        # Mock realistic AI responses for different processing types
         if processing_type == "full":
-            prompt = """This is a simulated transcription request. Please provide a sample transcription of a typical university lecture. Make it educational and realistic, about 200-300 words covering a topic like physics, mathematics, or computer science."""
-            
-            user_message = UserMessage(text=prompt)
-            transcript = await chat.send_message(user_message)
+            # Mock full transcription
+            transcript = """Welcome to today's Physics lecture on Newton's Laws of Motion. 
+
+Today we're going to explore the fundamental principles that govern how objects move and interact with forces. Let's start with Newton's First Law, also known as the Law of Inertia.
+
+Newton's First Law states that an object at rest stays at rest, and an object in motion stays in motion at constant velocity, unless acted upon by an external force. This might seem obvious, but it's actually quite profound when you think about it.
+
+For example, if you're sitting in a car and the car suddenly stops, your body continues moving forward. This is because your body wants to maintain its state of motion - that's inertia in action.
+
+Now, let's move on to Newton's Second Law, which is probably the most famous: F equals ma. Force equals mass times acceleration. This law tells us that the force applied to an object is directly proportional to the mass of the object and its acceleration.
+
+A practical example: if you push a shopping cart with the same force, an empty cart will accelerate much faster than a full cart. Same force, different mass, different acceleration.
+
+Finally, Newton's Third Law states that for every action, there is an equal and opposite reaction. When you walk, you push backward on the ground, and the ground pushes forward on you.
+
+These three laws form the foundation of classical mechanics and help us understand motion in our everyday world. Next class, we'll explore how these laws apply to circular motion and gravity."""
             
             # Update recording with transcript
             await db.recordings.update_one(
@@ -124,10 +125,29 @@ async def process_audio_with_ai(recording_id: str, audio_data: str, processing_t
             )
             
         elif processing_type == "summary":
-            prompt = """This is a simulated summarization request. Please provide a concise summary of a typical university lecture in bullet points. Make it educational and realistic, covering key concepts, main points, and conclusions."""
-            
-            user_message = UserMessage(text=prompt)
-            summary = await chat.send_message(user_message)
+            # Mock smart summary
+            summary = """📚 **Physics Lecture Summary: Newton's Laws of Motion**
+
+**🎯 Key Concepts:**
+• **Newton's First Law (Law of Inertia)**: Objects maintain their state of motion unless acted upon by external forces
+• **Newton's Second Law**: F = ma (Force = mass × acceleration)  
+• **Newton's Third Law**: Every action has an equal and opposite reaction
+
+**💡 Main Points:**
+1. **Inertia explained**: Objects resist changes in motion - demonstrated by car stopping example
+2. **Force-mass relationship**: Same force on different masses produces different accelerations (shopping cart example)
+3. **Action-reaction pairs**: Walking involves pushing ground backward, ground pushes you forward
+
+**🔍 Practical Examples:**
+- Car stopping → body continues moving forward (inertia)
+- Empty vs full shopping cart → different accelerations with same force
+- Walking → action-reaction force pairs
+
+**📖 Next Session Preview:**
+Application of these laws to circular motion and gravitational forces
+
+**⭐ Study Focus:**
+Understand how these three fundamental laws explain everyday motion phenomena"""
             
             # Update recording with summary
             await db.recordings.update_one(
@@ -136,19 +156,44 @@ async def process_audio_with_ai(recording_id: str, audio_data: str, processing_t
             )
             
         elif processing_type == "chapters":
-            prompt = """This is a simulated chapter detection request. Please provide a structured breakdown of a typical university lecture with chapters/sections like: Introduction, Key Concepts, Examples, and Conclusion. Format it as a clear outline."""
-            
-            user_message = UserMessage(text=prompt)
-            chapters = await chat.send_message(user_message)
+            # Mock chapter detection
+            chapters = """📖 **Lecture Structure: Newton's Laws of Motion**
+
+**🎬 Introduction (0:00-2:30)**
+- Course overview and today's topic
+- Importance of Newton's Laws in physics
+
+**📚 Chapter 1: Newton's First Law - Law of Inertia (2:30-8:45)**
+- Definition and explanation
+- Real-world examples (car stopping scenario)
+- Understanding inertia in daily life
+
+**⚖️ Chapter 2: Newton's Second Law - F=ma (8:45-15:20)**
+- Mathematical relationship between force, mass, and acceleration
+- Practical demonstration: shopping cart example
+- Problem-solving applications
+
+**🔄 Chapter 3: Newton's Third Law - Action-Reaction (15:20-22:10)**
+- Equal and opposite reactions principle
+- Walking as an example of action-reaction pairs
+- Common misconceptions addressed
+
+**🎯 Conclusion & Next Steps (22:10-25:00)**
+- Summary of three laws
+- Preview of next lecture: circular motion and gravity
+- Study recommendations
+
+**💡 Key Takeaways:**
+Each law builds upon the previous one to create a complete understanding of motion dynamics"""
             
             # Update recording with structured content
             await db.recordings.update_one(
                 {"id": recording_id},
-                {"$set": {"summary": f"**Chapter Breakdown:**\n{chapters}", "status": "completed"}}
+                {"$set": {"summary": chapters, "status": "completed"}}
             )
             
     except Exception as e:
-        logging.error(f"Error processing audio: {str(e)}")
+        logging.error(f"Error in mock AI processing: {str(e)}")
         await db.recordings.update_one(
             {"id": recording_id},
             {"$set": {"status": "failed"}}
