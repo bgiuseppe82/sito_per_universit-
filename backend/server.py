@@ -549,11 +549,14 @@ async def process_recording(recording_id: str, request: TranscriptionRequest, cu
         {"$set": {"status": "processing"}}
     )
     
-    # Process in background
-    asyncio.create_task(process_audio_with_ai(recording_id, recording["audio_data"], request.type))
+    # Use user's preferred language or request language
+    language = request.language if request.language else current_user.preferred_language
+    
+    # Process in background with language support
+    asyncio.create_task(process_audio_with_ai(recording_id, recording["audio_data"], request.type, language))
     
     return ProcessingResponse(
-        message=f"Processing started for {request.type} transcription",
+        message=f"Processing started for {request.type} transcription in {language}",
         recording_id=recording_id,
         status="processing"
     )
