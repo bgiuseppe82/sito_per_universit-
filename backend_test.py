@@ -441,7 +441,7 @@ class BackendTester:
             ("User Authentication", self.test_auth_profile),
             ("Audio Recording Storage", self.test_create_recording),
             ("Recording Retrieval", self.test_get_recordings),
-            ("AI Transcription", self.test_ai_transcription),
+            ("AI Processing (All Modes)", self.test_ai_processing_modes),
             ("Recording Management CRUD", self.test_recording_management),
             ("User Profile and Referral", self.test_user_profile)
         ]
