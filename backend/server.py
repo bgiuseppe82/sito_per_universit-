@@ -98,13 +98,13 @@ async def get_current_user(authorization: HTTPAuthorizationCredentials = Depends
     
     return User(**user)
 
-async def process_audio_with_ai(recording_id: str, audio_data: str, processing_type: str = "full"):
-    """Process audio data with mock AI responses that simulate Claude Sonnet 4"""
+async def process_audio_with_ai(recording_id: str, audio_data: str, processing_type: str = "full", language: str = "en"):
+    """Process audio data with language-specific mock AI responses"""
     try:
-        # Mock realistic AI responses for different processing types
-        if processing_type == "full":
-            # Mock full transcription
-            transcript = """Welcome to today's Physics lecture on Newton's Laws of Motion. 
+        # Language-specific content templates
+        language_content = {
+            "en": {
+                "full": """Welcome to today's Physics lecture on Newton's Laws of Motion. 
 
 Today we're going to explore the fundamental principles that govern how objects move and interact with forces. Let's start with Newton's First Law, also known as the Law of Inertia.
 
@@ -118,17 +118,8 @@ A practical example: if you push a shopping cart with the same force, an empty c
 
 Finally, Newton's Third Law states that for every action, there is an equal and opposite reaction. When you walk, you push backward on the ground, and the ground pushes forward on you.
 
-These three laws form the foundation of classical mechanics and help us understand motion in our everyday world. Next class, we'll explore how these laws apply to circular motion and gravity."""
-            
-            # Update recording with transcript
-            await db.recordings.update_one(
-                {"id": recording_id},
-                {"$set": {"transcript": transcript, "status": "completed"}}
-            )
-            
-        elif processing_type == "summary":
-            # Mock smart summary
-            summary = """📚 **Physics Lecture Summary: Newton's Laws of Motion**
+These three laws form the foundation of classical mechanics and help us understand motion in our everyday world. Next class, we'll explore how these laws apply to circular motion and gravity.""",
+                "summary": """📚 **Physics Lecture Summary: Newton's Laws of Motion**
 
 **🎯 Key Concepts:**
 • **Newton's First Law (Law of Inertia)**: Objects maintain their state of motion unless acted upon by external forces
@@ -149,17 +140,8 @@ These three laws form the foundation of classical mechanics and help us understa
 Application of these laws to circular motion and gravitational forces
 
 **⭐ Study Focus:**
-Understand how these three fundamental laws explain everyday motion phenomena"""
-            
-            # Update recording with summary
-            await db.recordings.update_one(
-                {"id": recording_id},
-                {"$set": {"summary": summary, "status": "completed"}}
-            )
-            
-        elif processing_type == "chapters":
-            # Mock chapter detection
-            chapters = """📖 **Lecture Structure: Newton's Laws of Motion**
+Understand how these three fundamental laws explain everyday motion phenomena""",
+                "chapters": """📖 **Lecture Structure: Newton's Laws of Motion**
 
 **🎬 Introduction (0:00-2:30)**
 - Course overview and today's topic
@@ -187,8 +169,296 @@ Understand how these three fundamental laws explain everyday motion phenomena"""
 
 **💡 Key Takeaways:**
 Each law builds upon the previous one to create a complete understanding of motion dynamics"""
+            },
+            "it": {
+                "full": """Benvenuti alla lezione di Fisica di oggi sulle Leggi del Moto di Newton.
+
+Oggi esploreremo i principi fondamentali che governano come gli oggetti si muovono e interagiscono con le forze. Iniziamo con la Prima Legge di Newton, nota anche come Legge dell'Inerzia.
+
+La Prima Legge di Newton afferma che un oggetto a riposo rimane a riposo, e un oggetto in movimento rimane in movimento a velocità costante, a meno che non sia soggetto a una forza esterna. Questo può sembrare ovvio, ma è in realtà molto profondo.
+
+Ad esempio, se state seduti in una macchina e la macchina si ferma improvvisamente, il vostro corpo continua a muoversi in avanti. Questo perché il vostro corpo vuole mantenere il suo stato di moto - questa è l'inerzia in azione.
+
+Ora, passiamo alla Seconda Legge di Newton, che è probabilmente la più famosa: F uguale ma. Forza uguale massa per accelerazione. Questa legge ci dice che la forza applicata a un oggetto è direttamente proporzionale alla massa dell'oggetto e alla sua accelerazione.
+
+Un esempio pratico: se spingete un carrello della spesa con la stessa forza, un carrello vuoto accelererà molto più velocemente di un carrello pieno. Stessa forza, massa diversa, accelerazione diversa.
+
+Infine, la Terza Legge di Newton afferma che per ogni azione, c'è una reazione uguale e opposta. Quando camminate, spingete all'indietro sul terreno, e il terreno spinge in avanti su di voi.
+
+Queste tre leggi formano la base della meccanica classica e ci aiutano a comprendere il movimento nel nostro mondo quotidiano. La prossima lezione esploreremo come queste leggi si applicano al moto circolare e alla gravità.""",
+                "summary": """📚 **Riassunto Lezione di Fisica: Leggi del Moto di Newton**
+
+**🎯 Concetti Chiave:**
+• **Prima Legge di Newton (Legge dell'Inerzia)**: Gli oggetti mantengono il loro stato di moto a meno che non siano soggetti a forze esterne
+• **Seconda Legge di Newton**: F = ma (Forza = massa × accelerazione)
+• **Terza Legge di Newton**: Ogni azione ha una reazione uguale e opposta
+
+**💡 Punti Principali:**
+1. **Inerzia spiegata**: Gli oggetti resistono ai cambiamenti nel moto - dimostrato dall'esempio dell'auto che si ferma
+2. **Relazione forza-massa**: Stessa forza su masse diverse produce accelerazioni diverse (esempio carrello della spesa)
+3. **Coppie azione-reazione**: Camminare implica spingere il terreno all'indietro, il terreno spinge in avanti
+
+**🔍 Esempi Pratici:**
+- Auto che si ferma → corpo continua a muoversi in avanti (inerzia)
+- Carrello vuoto vs pieno → accelerazioni diverse con stessa forza
+- Camminare → coppie di forze azione-reazione
+
+**📖 Anteprima Prossima Sessione:**
+Applicazione di queste leggi al moto circolare e alle forze gravitazionali
+
+**⭐ Focus di Studio:**
+Comprendere come queste tre leggi fondamentali spiegano i fenomeni di moto quotidiani""",
+                "chapters": """📖 **Struttura della Lezione: Leggi del Moto di Newton**
+
+**🎬 Introduzione (0:00-2:30)**
+- Panoramica del corso e argomento di oggi
+- Importanza delle Leggi di Newton nella fisica
+
+**📚 Capitolo 1: Prima Legge di Newton - Legge dell'Inerzia (2:30-8:45)**
+- Definizione e spiegazione
+- Esempi del mondo reale (scenario auto che si ferma)
+- Comprensione dell'inerzia nella vita quotidiana
+
+**⚖️ Capitolo 2: Seconda Legge di Newton - F=ma (8:45-15:20)**
+- Relazione matematica tra forza, massa e accelerazione
+- Dimostrazione pratica: esempio del carrello della spesa
+- Applicazioni nella risoluzione di problemi
+
+**🔄 Capitolo 3: Terza Legge di Newton - Azione-Reazione (15:20-22:10)**
+- Principio delle reazioni uguali e opposte
+- Camminare come esempio di coppie azione-reazione
+- Errori comuni affrontati
+
+**🎯 Conclusione e Prossimi Passi (22:10-25:00)**
+- Riassunto delle tre leggi
+- Anteprima della prossima lezione: moto circolare e gravità
+- Raccomandazioni di studio
+
+**💡 Punti Chiave:**
+Ogni legge si basa sulla precedente per creare una comprensione completa delle dinamiche del moto"""
+            },
+            "es": {
+                "full": """Bienvenidos a la clase de Física de hoy sobre las Leyes del Movimiento de Newton.
+
+Hoy vamos a explorar los principios fundamentales que gobiernan cómo los objetos se mueven e interactúan con las fuerzas. Empecemos con la Primera Ley de Newton, también conocida como la Ley de Inercia.
+
+La Primera Ley de Newton establece que un objeto en reposo permanece en reposo, y un objeto en movimiento permanece en movimiento a velocidad constante, a menos que sea afectado por una fuerza externa. Esto puede parecer obvio, pero es realmente muy profundo cuando lo piensas.
+
+Por ejemplo, si estás sentado en un carro y el carro se detiene repentinamente, tu cuerpo continúa moviéndose hacia adelante. Esto es porque tu cuerpo quiere mantener su estado de movimiento - eso es la inercia en acción.
+
+Ahora, pasemos a la Segunda Ley de Newton, que es probablemente la más famosa: F igual ma. Fuerza igual masa por aceleración. Esta ley nos dice que la fuerza aplicada a un objeto es directamente proporcional a la masa del objeto y su aceleración.
+
+Un ejemplo práctico: si empujas un carrito de compras con la misma fuerza, un carrito vacío acelerará mucho más rápido que un carrito lleno. Misma fuerza, diferente masa, diferente aceleración.
+
+Finalmente, la Tercera Ley de Newton establece que para cada acción, hay una reacción igual y opuesta. Cuando caminas, empujas hacia atrás en el suelo, y el suelo empuja hacia adelante en ti.
+
+Estas tres leyes forman la base de la mecánica clásica y nos ayudan a entender el movimiento en nuestro mundo cotidiano. La próxima clase exploraremos cómo estas leyes se aplican al movimiento circular y la gravedad.""",
+                "summary": """📚 **Resumen de Clase de Física: Leyes del Movimiento de Newton**
+
+**🎯 Conceptos Clave:**
+• **Primera Ley de Newton (Ley de Inercia)**: Los objetos mantienen su estado de movimiento a menos que sean afectados por fuerzas externas
+• **Segunda Ley de Newton**: F = ma (Fuerza = masa × aceleración)
+• **Tercera Ley de Newton**: Cada acción tiene una reacción igual y opuesta
+
+**💡 Puntos Principales:**
+1. **Inercia explicada**: Los objetos resisten cambios en el movimiento - demostrado por el ejemplo del carro que se detiene
+2. **Relación fuerza-masa**: Misma fuerza en diferentes masas produce diferentes aceleraciones (ejemplo del carrito de compras)
+3. **Pares acción-reacción**: Caminar involucra empujar el suelo hacia atrás, el suelo empuja hacia adelante
+
+**🔍 Ejemplos Prácticos:**
+- Carro que se detiene → cuerpo continúa moviéndose hacia adelante (inercia)
+- Carrito vacío vs lleno → diferentes aceleraciones con misma fuerza
+- Caminar → pares de fuerzas acción-reacción
+
+**📖 Vista Previa de Próxima Sesión:**
+Aplicación de estas leyes al movimiento circular y fuerzas gravitacionales
+
+**⭐ Enfoque de Estudio:**
+Entender cómo estas tres leyes fundamentales explican los fenómenos de movimiento cotidianos""",
+                "chapters": """📖 **Estructura de la Clase: Leyes del Movimiento de Newton**
+
+**🎬 Introducción (0:00-2:30)**
+- Resumen del curso y tema de hoy
+- Importancia de las Leyes de Newton en la física
+
+**📚 Capítulo 1: Primera Ley de Newton - Ley de Inercia (2:30-8:45)**
+- Definición y explicación
+- Ejemplos del mundo real (escenario del carro que se detiene)
+- Entendimiento de la inercia en la vida diaria
+
+**⚖️ Capítulo 2: Segunda Ley de Newton - F=ma (8:45-15:20)**
+- Relación matemática entre fuerza, masa y aceleración
+- Demostración práctica: ejemplo del carrito de compras
+- Aplicaciones en resolución de problemas
+
+**🔄 Capítulo 3: Tercera Ley de Newton - Acción-Reacción (15:20-22:10)**
+- Principio de reacciones iguales y opuestas
+- Caminar como ejemplo de pares acción-reacción
+- Conceptos erróneos comunes abordados
+
+**🎯 Conclusión y Próximos Pasos (22:10-25:00)**
+- Resumen de las tres leyes
+- Vista previa de la próxima clase: movimiento circular y gravedad
+- Recomendaciones de estudio
+
+**💡 Puntos Clave:**
+Cada ley se basa en la anterior para crear un entendimiento completo de las dinámicas del movimiento"""
+            },
+            "fr": {
+                "full": """Bienvenue au cours de Physique d'aujourd'hui sur les Lois du Mouvement de Newton.
+
+Aujourd'hui, nous allons explorer les principes fondamentaux qui régissent comment les objets se déplacent et interagissent avec les forces. Commençons par la Première Loi de Newton, également connue sous le nom de Loi d'Inertie.
+
+La Première Loi de Newton énonce qu'un objet au repos reste au repos, et un objet en mouvement reste en mouvement à vitesse constante, sauf s'il est soumis à une force externe. Cela peut sembler évident, mais c'est en fait très profond quand on y réfléchit.
+
+Par exemple, si vous êtes assis dans une voiture et que la voiture s'arrête soudainement, votre corps continue de bouger vers l'avant. C'est parce que votre corps veut maintenir son état de mouvement - c'est l'inertie en action.
+
+Maintenant, passons à la Deuxième Loi de Newton, qui est probablement la plus célèbre : F égale ma. Force égale masse fois accélération. Cette loi nous dit que la force appliquée à un objet est directement proportionnelle à la masse de l'objet et à son accélération.
+
+Un exemple pratique : si vous poussez un chariot de courses avec la même force, un chariot vide accélérera beaucoup plus rapidement qu'un chariot plein. Même force, masse différente, accélération différente.
+
+Enfin, la Troisième Loi de Newton énonce que pour chaque action, il y a une réaction égale et opposée. Quand vous marchez, vous poussez vers l'arrière sur le sol, et le sol pousse vers l'avant sur vous.
+
+Ces trois lois forment la base de la mécanique classique et nous aident à comprendre le mouvement dans notre monde quotidien. Le prochain cours, nous explorerons comment ces lois s'appliquent au mouvement circulaire et à la gravité.""",
+                "summary": """📚 **Résumé du Cours de Physique : Lois du Mouvement de Newton**
+
+**🎯 Concepts Clés :**
+• **Première Loi de Newton (Loi d'Inertie)** : Les objets maintiennent leur état de mouvement sauf s'ils sont soumis à des forces externes
+• **Deuxième Loi de Newton** : F = ma (Force = masse × accélération)
+• **Troisième Loi de Newton** : Chaque action a une réaction égale et opposée
+
+**💡 Points Principaux :**
+1. **Inertie expliquée** : Les objets résistent aux changements de mouvement - démontré par l'exemple de la voiture qui s'arrête
+2. **Relation force-masse** : Même force sur différentes masses produit différentes accélérations (exemple du chariot de courses)
+3. **Paires action-réaction** : Marcher implique pousser le sol vers l'arrière, le sol pousse vers l'avant
+
+**🔍 Exemples Pratiques :**
+- Voiture qui s'arrête → corps continue à bouger vers l'avant (inertie)
+- Chariot vide vs plein → accélérations différentes avec même force
+- Marcher → paires de forces action-réaction
+
+**📖 Aperçu de la Prochaine Session :**
+Application de ces lois au mouvement circulaire et aux forces gravitationnelles
+
+**⭐ Focus d'Étude :**
+Comprendre comment ces trois lois fondamentales expliquent les phénomènes de mouvement quotidiens""",
+                "chapters": """📖 **Structure du Cours : Lois du Mouvement de Newton**
+
+**🎬 Introduction (0:00-2:30)**
+- Aperçu du cours et sujet d'aujourd'hui
+- Importance des Lois de Newton en physique
+
+**📚 Chapitre 1 : Première Loi de Newton - Loi d'Inertie (2:30-8:45)**
+- Définition et explication
+- Exemples du monde réel (scénario de la voiture qui s'arrête)
+- Compréhension de l'inertie dans la vie quotidienne
+
+**⚖️ Chapitre 2 : Deuxième Loi de Newton - F=ma (8:45-15:20)**
+- Relation mathématique entre force, masse et accélération
+- Démonstration pratique : exemple du chariot de courses
+- Applications dans la résolution de problèmes
+
+**🔄 Chapitre 3 : Troisième Loi de Newton - Action-Réaction (15:20-22:10)**
+- Principe des réactions égales et opposées
+- Marcher comme exemple de paires action-réaction
+- Idées fausses communes abordées
+
+**🎯 Conclusion et Prochaines Étapes (22:10-25:00)**
+- Résumé des trois lois
+- Aperçu du prochain cours : mouvement circulaire et gravité
+- Recommandations d'étude
+
+**💡 Points Clés :**
+Chaque loi s'appuie sur la précédente pour créer une compréhension complète des dynamiques du mouvement"""
+            },
+            "de": {
+                "full": """Willkommen zur heutigen Physikvorlesung über Newtons Bewegungsgesetze.
+
+Heute werden wir die grundlegenden Prinzipien erforschen, die bestimmen, wie sich Objekte bewegen und mit Kräften interagieren. Beginnen wir mit Newtons Erstem Gesetz, auch bekannt als Trägheitsgesetz.
+
+Newtons Erstes Gesetz besagt, dass ein Objekt in Ruhe in Ruhe bleibt, und ein Objekt in Bewegung in Bewegung bei konstanter Geschwindigkeit bleibt, es sei denn, es wird von einer äußeren Kraft beeinflusst. Das mag offensichtlich erscheinen, aber es ist tatsächlich sehr tiefgreifend, wenn man darüber nachdenkt.
+
+Zum Beispiel, wenn Sie in einem Auto sitzen und das Auto plötzlich anhält, bewegt sich Ihr Körper weiter nach vorne. Das liegt daran, dass Ihr Körper seinen Bewegungszustand beibehalten möchte - das ist Trägheit in Aktion.
+
+Nun gehen wir zu Newtons Zweitem Gesetz über, das wahrscheinlich das berühmteste ist: F gleich ma. Kraft gleich Masse mal Beschleunigung. Dieses Gesetz sagt uns, dass die auf ein Objekt angewendete Kraft direkt proportional zur Masse des Objekts und seiner Beschleunigung ist.
+
+Ein praktisches Beispiel: Wenn Sie einen Einkaufswagen mit der gleichen Kraft schieben, wird ein leerer Wagen viel schneller beschleunigen als ein voller Wagen. Gleiche Kraft, verschiedene Masse, verschiedene Beschleunigung.
+
+Schließlich besagt Newtons Drittes Gesetz, dass für jede Aktion eine gleiche und entgegengesetzte Reaktion existiert. Wenn Sie gehen, drücken Sie nach hinten auf den Boden, und der Boden drückt nach vorne auf Sie.
+
+Diese drei Gesetze bilden die Grundlage der klassischen Mechanik und helfen uns, Bewegung in unserer alltäglichen Welt zu verstehen. In der nächsten Vorlesung werden wir erforschen, wie diese Gesetze auf Kreisbewegung und Schwerkraft angewendet werden.""",
+                "summary": """📚 **Physikvorlesung Zusammenfassung: Newtons Bewegungsgesetze**
+
+**🎯 Schlüsselkonzepte:**
+• **Newtons Erstes Gesetz (Trägheitsgesetz)**: Objekte behalten ihren Bewegungszustand bei, es sei denn, sie werden von äußeren Kräften beeinflusst
+• **Newtons Zweites Gesetz**: F = ma (Kraft = Masse × Beschleunigung)
+• **Newtons Drittes Gesetz**: Jede Aktion hat eine gleiche und entgegengesetzte Reaktion
+
+**💡 Hauptpunkte:**
+1. **Trägheit erklärt**: Objekte widersetzen sich Änderungen in der Bewegung - demonstriert durch das Beispiel des anhaltenden Autos
+2. **Kraft-Masse-Beziehung**: Gleiche Kraft auf verschiedene Massen erzeugt verschiedene Beschleunigungen (Einkaufswagen-Beispiel)
+3. **Aktion-Reaktion-Paare**: Gehen beinhaltet das Drücken des Bodens nach hinten, Boden drückt nach vorne
+
+**🔍 Praktische Beispiele:**
+- Auto hält an → Körper bewegt sich weiter nach vorne (Trägheit)
+- Leerer vs voller Einkaufswagen → verschiedene Beschleunigungen mit gleicher Kraft
+- Gehen → Aktion-Reaktion-Kraftpaare
+
+**📖 Vorschau auf nächste Sitzung:**
+Anwendung dieser Gesetze auf Kreisbewegung und Gravitationskräfte
+
+**⭐ Studienfokus:**
+Verstehen, wie diese drei fundamentalen Gesetze alltägliche Bewegungsphänomene erklären""",
+                "chapters": """📖 **Vorlesungsstruktur: Newtons Bewegungsgesetze**
+
+**🎬 Einführung (0:00-2:30)**
+- Kursüberblick und heutiges Thema
+- Wichtigkeit von Newtons Gesetzen in der Physik
+
+**📚 Kapitel 1: Newtons Erstes Gesetz - Trägheitsgesetz (2:30-8:45)**
+- Definition und Erklärung
+- Beispiele aus der realen Welt (Szenario des anhaltenden Autos)
+- Verständnis von Trägheit im täglichen Leben
+
+**⚖️ Kapitel 2: Newtons Zweites Gesetz - F=ma (8:45-15:20)**
+- Mathematische Beziehung zwischen Kraft, Masse und Beschleunigung
+- Praktische Demonstration: Einkaufswagen-Beispiel
+- Anwendungen in der Problemlösung
+
+**🔄 Kapitel 3: Newtons Drittes Gesetz - Aktion-Reaktion (15:20-22:10)**
+- Prinzip gleicher und entgegengesetzter Reaktionen
+- Gehen als Beispiel für Aktion-Reaktion-Paare
+- Häufige Missverständnisse angesprochen
+
+**🎯 Fazit und nächste Schritte (22:10-25:00)**
+- Zusammenfassung der drei Gesetze
+- Vorschau auf nächste Vorlesung: Kreisbewegung und Schwerkraft
+- Studienempfehlungen
+
+**💡 Wichtige Erkenntnisse:**
+Jedes Gesetz baut auf dem vorherigen auf, um ein vollständiges Verständnis der Bewegungsdynamik zu schaffen"""
+            }
+        }
+        
+        # Get language-specific content or default to English
+        content = language_content.get(language, language_content["en"])
+        
+        if processing_type == "full":
+            transcript = content["full"]
+            await db.recordings.update_one(
+                {"id": recording_id},
+                {"$set": {"transcript": transcript, "status": "completed"}}
+            )
             
-            # Update recording with structured content
+        elif processing_type == "summary":
+            summary = content["summary"]
+            await db.recordings.update_one(
+                {"id": recording_id},
+                {"$set": {"summary": summary, "status": "completed"}}
+            )
+            
+        elif processing_type == "chapters":
+            chapters = content["chapters"]
             await db.recordings.update_one(
                 {"id": recording_id},
                 {"$set": {"summary": chapters, "status": "completed"}}
