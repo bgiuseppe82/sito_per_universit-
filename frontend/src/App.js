@@ -14,6 +14,7 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sessionToken, setSessionToken] = useState(localStorage.getItem('sessionToken'));
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     // Check if returning from auth
@@ -36,8 +37,15 @@ const AuthProvider = ({ children }) => {
       const response = await axios.get(`${API}/auth/profile`, {
         headers: { 'X-Session-ID': token }
       });
-      setUser(response.data);
-      localStorage.setItem('user', JSON.stringify(response.data));
+      
+      const userData = response.data;
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+      
+      // Set language preference
+      if (userData.preferred_language) {
+        i18n.changeLanguage(userData.preferred_language);
+      }
     } catch (error) {
       console.error('Failed to fetch profile:', error);
       localStorage.removeItem('sessionToken');
@@ -60,8 +68,26 @@ const AuthProvider = ({ children }) => {
     setSessionToken(null);
   };
 
+  const updateUserLanguage = async (language) => {
+    try {
+      await axios.put(`${API}/user/language`, { language }, {
+        headers: { 'Authorization': `Bearer ${sessionToken}` }
+      });
+      
+      // Update local user data
+      const updatedUser = { ...user, preferred_language: language };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      
+      // Change UI language
+      i18n.changeLanguage(language);
+    } catch (error) {
+      console.error('Failed to update language:', error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading, sessionToken }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, sessionToken, updateUserLanguage }}>
       {children}
     </AuthContext.Provider>
   );
