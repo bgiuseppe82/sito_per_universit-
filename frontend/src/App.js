@@ -179,23 +179,70 @@ const useAudioRecorder = () => {
   };
 };
 
+// Language Selector Component
+const LanguageSelector = ({ showLabel = true }) => {
+  const { t, i18n } = useTranslation();
+  const { updateUserLanguage } = useAuth();
+  
+  const languages = [
+    { code: 'en', name: t('language.languages.en'), flag: '🇺🇸' },
+    { code: 'it', name: t('language.languages.it'), flag: '🇮🇹' },
+    { code: 'es', name: t('language.languages.es'), flag: '🇪🇸' },
+    { code: 'fr', name: t('language.languages.fr'), flag: '🇫🇷' },
+    { code: 'de', name: t('language.languages.de'), flag: '🇩🇪' }
+  ];
+  
+  const handleLanguageChange = async (languageCode) => {
+    if (updateUserLanguage) {
+      await updateUserLanguage(languageCode);
+    } else {
+      i18n.changeLanguage(languageCode);
+    }
+  };
+  
+  return (
+    <div className="language-selector">
+      {showLabel && (
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          {t('language.selectLanguage')}
+        </label>
+      )}
+      <select
+        value={i18n.language}
+        onChange={(e) => handleLanguageChange(e.target.value)}
+        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        {languages.map((lang) => (
+          <option key={lang.code} value={lang.code}>
+            {lang.flag} {lang.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
 // Components
 const Header = () => {
   const { user, login, logout } = useAuth();
+  const { t } = useTranslation();
 
   return (
     <header className="bg-blue-600 text-white p-4 shadow-lg">
       <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-2xl font-bold">SmartNotes</h1>
+        <h1 className="text-2xl font-bold">{t('app.title')}</h1>
         <div className="flex items-center space-x-4">
+          <div className="hidden md:block">
+            <LanguageSelector showLabel={false} />
+          </div>
           {user ? (
             <>
-              <span className="text-sm">Welcome, {user.name}</span>
+              <span className="text-sm">{t('auth.welcome')}, {user.name}</span>
               <button
                 onClick={logout}
                 className="bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded text-sm"
               >
-                Logout
+                {t('auth.logout')}
               </button>
             </>
           ) : (
@@ -203,7 +250,7 @@ const Header = () => {
               onClick={login}
               className="bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded text-sm"
             >
-              Login
+              {t('auth.login')}
             </button>
           )}
         </div>
@@ -212,11 +259,17 @@ const Header = () => {
   );
 };
 
-const LoadingSpinner = () => (
-  <div className="flex justify-center items-center h-screen">
-    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-  </div>
-);
+const LoadingSpinner = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mb-4"></div>
+        <p className="text-gray-600">{t('app.loading')}</p>
+      </div>
+    </div>
+  );
+};
 
 const RecordingControls = ({ onRecordingComplete }) => {
   const { isRecording, audioData, duration, error, startRecording, stopRecording, resetRecording } = useAudioRecorder();
