@@ -418,7 +418,8 @@ const RecordingControls = ({ onRecordingComplete }) => {
 };
 
 const RecordingsList = ({ recordings, onRecordingUpdate }) => {
-  const { sessionToken } = useAuth();
+  const { sessionToken, user } = useAuth();
+  const { t, i18n } = useTranslation();
   const [processing, setProcessing] = useState({});
 
   const handleProcess = async (recordingId, type) => {
@@ -427,7 +428,8 @@ const RecordingsList = ({ recordings, onRecordingUpdate }) => {
     try {
       await axios.post(`${API}/recordings/${recordingId}/process`, {
         recording_id: recordingId,
-        type: type
+        type: type,
+        language: user?.preferred_language || i18n.language
       }, {
         headers: { 'Authorization': `Bearer ${sessionToken}` }
       });
@@ -457,7 +459,7 @@ const RecordingsList = ({ recordings, onRecordingUpdate }) => {
   };
 
   const handleDelete = async (recordingId) => {
-    if (!window.confirm('Are you sure you want to delete this recording?')) return;
+    if (!window.confirm(t('recordings.deleteConfirm'))) return;
     
     try {
       await axios.delete(`${API}/recordings/${recordingId}`, {
@@ -470,7 +472,7 @@ const RecordingsList = ({ recordings, onRecordingUpdate }) => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(i18n.language, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -481,11 +483,11 @@ const RecordingsList = ({ recordings, onRecordingUpdate }) => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Your Recordings</h2>
+      <h2 className="text-xl font-semibold">{t('recordings.title')}</h2>
       
       {recordings.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
-          No recordings yet. Record your first lesson above!
+          {t('recordings.noRecordings')}
         </div>
       ) : (
         recordings.map(recording => (
@@ -508,6 +510,7 @@ const RecordingsList = ({ recordings, onRecordingUpdate }) => {
               <button
                 onClick={() => handleDelete(recording.id)}
                 className="text-red-500 hover:text-red-700 p-1"
+                title={t('app.delete')}
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9zM4 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 012 0v6a1 1 0 11-2 0V9zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V9z" clipRule="evenodd" />
@@ -528,7 +531,7 @@ const RecordingsList = ({ recordings, onRecordingUpdate }) => {
                   disabled={processing[recording.id] === 'full'}
                   className="bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white px-4 py-2 rounded text-sm"
                 >
-                  {processing[recording.id] === 'full' ? 'Processing...' : 'Full Transcript'}
+                  {processing[recording.id] === 'full' ? t('ai.processing') : t('ai.fullTranscript')}
                 </button>
                 
                 <button
@@ -536,7 +539,7 @@ const RecordingsList = ({ recordings, onRecordingUpdate }) => {
                   disabled={processing[recording.id] === 'summary'}
                   className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white px-4 py-2 rounded text-sm"
                 >
-                  {processing[recording.id] === 'summary' ? 'Processing...' : 'Summary'}
+                  {processing[recording.id] === 'summary' ? t('ai.processing') : t('ai.summary')}
                 </button>
                 
                 <button
@@ -544,20 +547,20 @@ const RecordingsList = ({ recordings, onRecordingUpdate }) => {
                   disabled={processing[recording.id] === 'chapters'}
                   className="bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300 text-white px-4 py-2 rounded text-sm"
                 >
-                  {processing[recording.id] === 'chapters' ? 'Processing...' : 'Chapters'}
+                  {processing[recording.id] === 'chapters' ? t('ai.processing') : t('ai.chapters')}
                 </button>
               </div>
               
               {recording.transcript && (
                 <div className="bg-gray-50 p-4 rounded">
-                  <h4 className="font-medium mb-2">Transcript:</h4>
+                  <h4 className="font-medium mb-2">{t('ai.transcriptLabel')}</h4>
                   <p className="text-sm text-gray-700 whitespace-pre-wrap">{recording.transcript}</p>
                 </div>
               )}
               
               {recording.summary && (
                 <div className="bg-blue-50 p-4 rounded">
-                  <h4 className="font-medium mb-2">Summary:</h4>
+                  <h4 className="font-medium mb-2">{t('ai.summaryLabel')}</h4>
                   <p className="text-sm text-gray-700 whitespace-pre-wrap">{recording.summary}</p>
                 </div>
               )}
