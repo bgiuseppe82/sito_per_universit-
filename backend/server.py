@@ -103,12 +103,12 @@ async def process_audio_with_ai(recording_id: str, audio_data: str, processing_t
         # In a real implementation, you'd first convert audio to text using Whisper
         # Then send the text to Gemini for summarization
         
-        # Initialize Gemini chat
+        # Initialize ChatGPT chat
         chat = LlmChat(
-            api_key=os.environ.get('GEMINI_API_KEY', 'demo-key'),
+            api_key=os.environ.get('OPENAI_API_KEY', 'demo-key'),
             session_id=f"audio-processing-{recording_id}",
             system_message="You are an AI assistant that helps students by transcribing and summarizing their lesson recordings."
-        ).with_model("gemini", "gemini-2.0-flash")
+        ).with_model("openai", "gpt-4o")
         
         # Simulate transcription (in real app, use Whisper API first)
         if processing_type == "full":
