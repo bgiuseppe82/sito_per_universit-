@@ -577,6 +577,7 @@ const Dashboard = () => {
   const [recordings, setRecordings] = useState([]);
   const [loading, setLoading] = useState(true);
   const { sessionToken } = useAuth();
+  const { t } = useTranslation();
 
   const fetchRecordings = async () => {
     try {
@@ -606,8 +607,8 @@ const Dashboard = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to SmartNotes</h1>
-        <p className="text-gray-600">Record your lessons and get AI-powered transcripts and summaries</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('dashboard.title')}</h1>
+        <p className="text-gray-600">{t('dashboard.subtitle')}</p>
       </div>
       
       <RecordingControls onRecordingComplete={handleRecordingComplete} />
@@ -618,13 +619,14 @@ const Dashboard = () => {
 
 const LoginPrompt = () => {
   const { login } = useAuth();
+  const { t } = useTranslation();
   
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">SmartNotes</h1>
-          <p className="text-gray-600 mb-8">AI-powered lesson transcription and summarization for students</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">{t('app.title')}</h1>
+          <p className="text-gray-600 mb-8">{t('app.subtitle')}</p>
           
           <div className="space-y-4 mb-8">
             <div className="flex items-center space-x-3">
@@ -633,7 +635,7 @@ const LoginPrompt = () => {
                   <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
                 </svg>
               </div>
-              <span className="text-sm">Record lessons with one tap</span>
+              <span className="text-sm">{t('features.recording')}</span>
             </div>
             
             <div className="flex items-center space-x-3">
@@ -642,7 +644,7 @@ const LoginPrompt = () => {
                   <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" clipRule="evenodd" />
                 </svg>
               </div>
-              <span className="text-sm">AI transcription & summarization</span>
+              <span className="text-sm">{t('features.transcription')}</span>
             </div>
             
             <div className="flex items-center space-x-3">
@@ -651,15 +653,19 @@ const LoginPrompt = () => {
                   <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
               </div>
-              <span className="text-sm">Export & share notes</span>
+              <span className="text-sm">{t('features.sharing')}</span>
             </div>
+          </div>
+          
+          <div className="mb-6">
+            <LanguageSelector />
           </div>
           
           <button
             onClick={login}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition-colors"
           >
-            Get Started
+            {t('auth.getStarted')}
           </button>
         </div>
       </div>
