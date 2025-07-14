@@ -236,8 +236,8 @@ class BackendTester:
             self.log_result("AI Processing (All Modes)", False, f"Only {success_count}/{total_modes} modes successful")
             return False
     
-    def verify_transcription_completion(self):
-        """Verify that transcription was completed"""
+    def verify_processing_completion(self, mode_type, mode_name):
+        """Verify that AI processing was completed for specific mode"""
         try:
             headers = {'Authorization': f'Bearer {self.session_token}'}
             response = requests.get(f"{API_BASE}/recordings/{self.test_recording_id}", 
@@ -245,22 +245,43 @@ class BackendTester:
             
             if response.status_code == 200:
                 data = response.json()
-                if data.get('status') == 'completed' and data.get('transcript'):
-                    self.log_result("AI Transcription Completion", True, "Transcription completed successfully",
-                                  f"Transcript length: {len(data['transcript'])} characters")
-                    return True
+                if data.get('status') == 'completed':
+                    # Check for appropriate content based on mode
+                    if mode_type == 'full' and data.get('transcript'):
+                        transcript_content = data['transcript']
+                        if "Newton's Laws" in transcript_content and len(transcript_content) > 500:
+                            self.log_result(f"AI {mode_name} Completion", True, 
+                                          f"{mode_name} completed with realistic content",
+                                          f"Content length: {len(transcript_content)} characters")
+                            return True
+                    elif mode_type in ['summary', 'chapters'] and data.get('summary'):
+                        summary_content = data['summary']
+                        if mode_type == 'summary' and "📚" in summary_content and "Key Concepts" in summary_content:
+                            self.log_result(f"AI {mode_name} Completion", True, 
+                                          f"{mode_name} completed with structured summary",
+                                          f"Content length: {len(summary_content)} characters")
+                            return True
+                        elif mode_type == 'chapters' and "📖" in summary_content and "Chapter" in summary_content:
+                            self.log_result(f"AI {mode_name} Completion", True, 
+                                          f"{mode_name} completed with chapter breakdown",
+                                          f"Content length: {len(summary_content)} characters")
+                            return True
+                    
+                    self.log_result(f"AI {mode_name} Completion", False, 
+                                  f"Processing completed but content doesn't match expected format for {mode_type}")
+                    return False
                 elif data.get('status') == 'processing':
-                    self.log_result("AI Transcription Completion", True, "Transcription still processing (expected)")
+                    self.log_result(f"AI {mode_name} Completion", True, f"{mode_name} still processing (acceptable)")
                     return True
                 else:
-                    self.log_result("AI Transcription Completion", False, 
-                                  f"Status: {data.get('status')}, Has transcript: {bool(data.get('transcript'))}")
+                    self.log_result(f"AI {mode_name} Completion", False, 
+                                  f"Status: {data.get('status')}, Expected: completed")
                     return False
             else:
-                self.log_result("AI Transcription Completion", False, f"HTTP {response.status_code}: {response.text}")
+                self.log_result(f"AI {mode_name} Completion", False, f"HTTP {response.status_code}: {response.text}")
                 return False
         except Exception as e:
-            self.log_result("AI Transcription Completion", False, f"Request error: {str(e)}")
+            self.log_result(f"AI {mode_name} Completion", False, f"Request error: {str(e)}")
             return False
     
     def test_recording_management(self):
